@@ -1,0 +1,226 @@
+# ============================================================
+# 🏥 Anova Health Insurance - Building Decision Tree Model
+# 🌳 Decision Tree | Explainable Machine Learning
+# ============================================================
+
+Project:
+  Name: 🏥 Anova Insurance Health Risk Prediction
+  Domain: 💼 Health Insurance | 📊 Risk Analytics
+  Model_type: 🤖 Supervised Machine Learning
+  Task: 🧩 Binary Classification
+  Algorithm: 🌳 Decision Tree
+  Explainability: 🔍 High (Business-friendly rules)
+
+Overview:
+  Business_context:
+    Description: >
+      🏢 Anova Insurance aims to optimize health insurance eligibility
+      and premium pricing decisions by understanding applicant health risk.
+    Key_decisions:
+      - ✅ Insurance eligibility approval
+      - 💰 Premium pricing (standard vs risk-adjusted)
+    Risk_focus:
+      - 🚫 Avoid underpricing high-risk applicants
+      - 🎯 Reduce false negatives (Unhealthy predicted as Healthy)
+
+Problem_statement:
+  Objective: >
+    🎯 Build a predictive model that classifies individuals as
+    Healthy (0) or Unhealthy (1) using health, lifestyle,
+    and medical data.
+  Why_it_matters:
+    Healthy:
+      Impact: 🟢 Lower claim risk
+      Action: 💸 Standard or discounted premium
+    Unhealthy:
+      Impact: 🔴 Higher claim risk
+      Action: ⚠️ Risk-adjusted premium or medical review
+
+Dataset:
+  Source: 🗂️ Anova Insurance (Synthetic / Training Dataset)
+  Shape:
+    Rows: 10000
+    Columns: 20
+  Target_variable:
+    Name: 🎯 Target
+    Mapping:
+      0: 🟢 Healthy
+      1: 🔴 Unhealthy
+  Data_challenges:
+    - ❗ Missing values (especially for older individuals)
+    - ❌ Negative age values
+    - 🔄 Mixed feature types (numeric, ordinal, nominal)
+
+Features:
+  Numerical:
+    - 🎂 Age
+    - ⚖️ BMI
+    - 💉 Blood_Pressure
+    - 🧪 Cholesterol
+    - 🍬 Glucose_Level
+    - ❤️ Heart_Rate
+    - 😴 Sleep_Hours
+    - 🏃 Exercise_Hours
+    - 🚰 Water_Intake
+    - 😖 Stress_Level
+
+  Ordinal_categorical_0_1_2:
+    - 🚬 Smoking
+    - 🍺 Alcohol
+    - 🥗 Diet
+    - 🧠 MentalHealth
+    - 🏋️ PhysicalActivity
+    - 🏥 MedicalHistory
+    - 🤧 Allergies
+
+  Nominal_categorical:
+    - 🍽️ Diet_Type: [Vegetarian, Non-Vegetarian, Vegan]
+    - 🩸 Blood_Group: [A, B, AB, O]
+
+ML_Objective:
+  Task_type: 🧠 Classification
+  Prediction:
+    Output:
+      0: 🟢 Healthy
+      1: 🔴 Unhealthy
+  Evaluation_priority:
+    Primary: 🎯 Recall (Unhealthy)
+    Reason: >
+      ⚠️ False Negatives cause underpriced high-risk policies,
+      which is financially dangerous for insurers.
+
+Workflow:
+  Step_1:
+    Name: 📥 Data Ingestion
+    Actions:
+      - 📂 Load dataset
+      - 🔍 Validate shape and schema
+      - ✅ Verify target values ∈ {0,1}
+
+  Step_2:
+    Name: 🔎 Exploratory Data Analysis (EDA)
+    Actions:
+      - 📊 Target distribution check
+      - 📈 Numeric feature statistics
+      - 🧩 Missing value analysis
+      - 🔗 Correlation with target
+      - 📌 Category frequency analysis
+    Outputs:
+      - 💡 Risk indicator hypotheses
+      - 🧠 Data quality insights
+
+  Step_3:
+    Name: 🧹 Data Cleaning
+    Actions:
+      - ❌ Convert negative ages → NaN
+      - 🚫 Remove impossible values (BMI ≤ 0, invalid sleep hours)
+      - 🛠️ Handle missing values:
+          numerical: median
+          ordinal: mode
+          nominal: mode / "Unknown"
+
+  Step_4:
+    Name: 🏗️ Feature Engineering
+    Actions:
+      - 🔢 Preserve ordinal ordering (0 < 1 < 2)
+      - 🧩 One-hot encode nominal features
+      - ✨ Optional domain features:
+          - ⚖️ BMI category
+          - 💉 Blood pressure category
+          - 🧬 Lifestyle risk score
+
+  Step_5:
+    Name: 🔀 Train-Test Split
+    Config:
+      split_ratio: 80/20
+      stratify: Target
+      random_state: 🔁 Fixed
+
+  Step_6:
+    Name: 🌱 Baseline Decision Tree
+    Purpose: 🧪 Establish reference performance
+    Config:
+      random_state: 🔁 Fixed
+      max_depth: Default
+
+  Step_7:
+    Name: 🎛️ Hyperparameter Tuning
+    Focus: 🛡️ Prevent overfitting
+    Tuned_parameters:
+      - 🌳 max_depth
+      - 🔀 min_samples_split
+      - 🍃 min_samples_leaf
+      - ⚖️ class_weight
+    Strategy:
+      - 🔁 GridSearchCV / RandomizedSearchCV
+      - 🎯 Optimize recall for Unhealthy class
+
+  Step_8:
+    Name: 📏 Model Evaluation
+    Technical_metrics:
+      - 📉 Confusion Matrix
+      - 📊 Accuracy
+      - 🎯 Precision (Unhealthy)
+      - 🚨 Recall (Unhealthy)
+      - 🧮 F1-score
+      - 📈 ROC-AUC
+    Insurance_lens:
+      - 🚫 Track False Negatives explicitly
+      - 🔧 Adjust thresholds if required
+
+  Step_9:
+    Name: 🔍 Model Interpretability
+    Outputs:
+      - ⭐ Feature importance ranking
+      - 🌳 Decision tree visualization
+      - 🗣️ Human-readable IF–THEN rules
+    Example_rule: >
+      IF 🍬 Glucose_Level is high AND 🏥 MedicalHistory is severe
+      THEN applicant is 🔴 Unhealthy
+
+  Step_10:
+    Name: 🧮 Risk Banding & Premium Mapping
+    Method: 📊 Probability-based (Recommended)
+    Risk_bands:
+      Low:
+        condition: p(Unhealthy) < 0.30
+        action: 💸 Standard / Discount premium
+      Medium:
+        condition: 0.30 ≤ p < 0.60
+        action: ⚠️ Caution / Mild loading
+      High:
+        condition: p ≥ 0.60
+        action: 🚑 Higher premium / Medical review
+
+Deployment_readiness:
+  usage_notes:
+    - 🤝 Model supports decisions, not final approval
+    - 👩‍⚖️ Underwriters retain authority
+  Monitoring:
+    - 📉 Track prediction drift
+    - 🚨 Review false negative trends
+    - 🔁 Periodic retraining recommended
+
+Success_criteria:
+  Technical:
+    - 🎯 Strong recall for Unhealthy
+    - 📈 Stable ROC-AUC
+    - 🛡️ Controlled overfitting
+  Business:
+    - 💰 Better premium differentiation
+    - 🔐 Reduced underwriting risk
+    - 🔍 Explainable and auditable decisions
+
+Deliverables:
+  - 📂 Cleaned dataset
+  - 📊 EDA insights
+  - 🌳 Trained Decision Tree model
+  - 📏 Evaluation metrics
+  - 🧠 Interpretable rules
+  - 💸 Risk band & premium mapping logic
+  - 🚀 Deployment-ready notebook
+
+Next_improvements:
+  - 🌲 Random Forest / ⚡ Gradient Boosting comparison
+  - 🎯 Probability calibration
+  - ⚖️ Bias & fairness checks
